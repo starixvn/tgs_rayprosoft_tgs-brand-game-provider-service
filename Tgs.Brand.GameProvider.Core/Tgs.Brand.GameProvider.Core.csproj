@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MediatR" Version="12.1.1" />
+		<PackageReference Include="StackExchange.Redis" Version="2.6.96" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Tgs.Brand.GameProvider.Domain\Tgs.Brand.GameProvider.Domain.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -51,10 +51,6 @@ internal class TestApplication : WebApplicationFactory<service::Program>
             .Replace(ServiceDescriptor.Singleton(sp =>
             {
                 var dbContextOptionsBuilder = new DbContextOptionsBuilder<tgsContext>();
-                //_ = dbContextOptionsBuilder
-                //    .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                //    .ConfigureWarnings(x => x.Ignore(
-                //        InMemoryEventId.TransactionIgnoredWarning));
 
                 return new tgsContext(dbContextOptionsBuilder.Options);
             }))

@@ -29,9 +29,9 @@ builder.Logging
         options.ParseStateValues = true;
         _ = options.AddFluentdForwardExporter(fluentOptions =>
         {
-            var nodeIp = builder.Configuration.GetValue<string>("NODE_IP");
+            var nodeIp = builder.Configuration.GetValue<string>("Otel:NodeIp");
             fluentOptions.Host = nodeIp!;
-            fluentOptions.Tag = builder.Configuration.GetValue<string>("OTEL_SERVICE_NAME")!;
+            fluentOptions.Tag = builder.Configuration.GetValue<string>("Otel:ServiceName")!;
             fluentOptions.UseMessagePack();
         });
     });
@@ -48,17 +48,17 @@ builder.Services
         conifg.GetSection("Opentelemetry:Tracing").Bind(options);
     });
 
-builder.Services.AddOpenTelemetry()
-    .WithTracing(builder => builder
-        .SetResourceBuilder(ResourceBuilder.CreateDefault()
-            .AddEnvironmentVariableDetector())
+builder.Services
+    .AddOpenTelemetry()
+    .ConfigureResource(_ => _.AddService(builder.Configuration.GetValue<string>("Otel:ServiceName")))
+    .WithTracing(tracingBuilder => tracingBuilder
         .AddSource("Tgs.*")
         .AddSource("TGS.*")
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
         .AddProfileViewExporter()
-        .AddOtlpExporter())
+        .AddOtlpExporter(options => options.Endpoint = builder.Configuration.GetValue<Uri>("Otel:Collector")))
     .Services
     .Configure<AspNetCoreInstrumentationOptions>(options => options.Filter =
         httpContext => !httpContext.Request.Path.HasValue ||
